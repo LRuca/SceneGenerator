@@ -9,7 +9,10 @@ def validate_scene(scene,n):
     ids=[]
     for e in scene["entities"]:
         ids.append(e["id"])
-        if e["motion"] not in ("static","rigid"):raise ValueError("Baseline fits static/rigid entities only")
+        if e["motion"] not in ("static","rigid","deformable"):raise ValueError("Unsupported scene motion")
+        if e["motion"]=="deformable":
+            from .cage_v4 import validate
+            validate(e["deformation"],n)
         pose=np.asarray(e["entity_to_world"],float)
         if pose.shape!=((1 if e["motion"]=="static" else n),4,4):raise ValueError("Scene pose timeline")
         if not np.isfinite(pose).all() or not np.allclose(pose[:,3,:],[0,0,0,1]):raise ValueError("Scene pose")
@@ -88,6 +91,14 @@ def initialize(manifest,hypothesis,masks_manifest,out):
     for entity_id,mask in zip(ids,masks):
         e=entities[entity_id]
         if e["motion"] not in ("static","rigid"):raise ValueError("Unsupported motion needs agent revision: "+entity_id)
+        if e["motion"]=="static" and len(e["parts"])==1 and e["parts"][0]["kind"]=="plane" and e["parts"][0].get("role") in {"wall","vertical_surface"}:
+            from .surfaces_v2 import vertical_surface
+            pose,matrix,report=vertical_surface(a,mask,up,thickness_ratio=.01)
+            output.append({"id":entity_id,"label":e["label"],"motion":"static",
+              "parts":[{"id":e["parts"][0]["id"],"kind":"box","role":"vertical_surface","canonical_to_entity":matrix.tolist()}],
+              "entity_to_world":[pose.tolist()],"observed":mask.any(axis=(1,2)).tolist(),"renderable":[True]*n,
+              "initialization":"role-aware measured vertical surface with explicit thickness prior","surface_prior":report})
+            continue
         points,by_time=points_for_mask(a,mask);observed=mask.any(axis=(1,2))
         boxes=[];centers=[];yaws=[]
         times=[0] if e["motion"]=="static" else list(range(n))

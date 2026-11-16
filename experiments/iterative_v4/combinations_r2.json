@@ -1,0 +1,19 @@
+{
+  "baseline": {},
+  "visible_depth": {
+    "visible_depth": 0.15
+  },
+  "visible_soft_containment": {
+    "visible_depth": 0.15,
+    "containment": 0.5
+  },
+  "visible_free": {
+    "visible_depth": 0.15,
+    "free_space": 0.5
+  },
+  "visible_containment_free": {
+    "visible_depth": 0.15,
+    "containment": 0.5,
+    "free_space": 0.5
+  }
+}

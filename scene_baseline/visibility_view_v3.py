@@ -4,7 +4,7 @@ import numpy as np
 import imageio.v2 as imageio
 from PIL import Image,ImageDraw
 from .scene import load_scene
-from .geometry import scene_parts,mesh_preview,render_parts,unit_mesh,transform_mesh
+from .geometry import part_mesh,scene_parts,mesh_preview,render_parts,unit_mesh,transform_mesh
 from .global_views import look_at
 from .physical_audit import audit
 from .storage import new_run,read_json,write_json,reference,verify
@@ -18,7 +18,7 @@ def export(old_path,new_path,fit_path,out,width=300):
  p=new_run(out);n,H,W=a["depth"].shape;sc=width/W
  A=np.array([[sc,0,(sc-1)/2],[0,sc,(sc-1)/2],[0,0,1.]])
  lm=np.load(fit_path);uv=lm["image_points"];valid=lm["valid"]
- entity=next(e for e in new["entities"] if e["motion"]=="rigid")
+ entity=next(e for e in new["entities"] if e["motion"] in ("rigid","deformable"))
  local=np.asarray(entity.get("landmarks",{}).get("entity_points",lm["entity_points"]))
  poses=np.asarray(entity["entity_to_world"])
  world=np.einsum("nij,pj->npi",poses[:,:3,:3],local)+poses[:,:3,3][:,None,:]
@@ -30,7 +30,7 @@ def export(old_path,new_path,fit_path,out,width=300):
  for scene in [old,new]:
   for t in [0,n//2,n-1]:
    for part in scene_parts(scene,t):
-    allv.append(transform_mesh(unit_mesh("box" if part["kind"]=="plane" else part["kind"]),part["canonical_to_world"])[0])
+    allv.append(part_mesh(part)[0])
  xyz=np.concatenate(allv);ctr=(xyz.min(0)+xyz.max(0))/2;rad=np.linalg.norm(xyz-ctr,axis=1).max()
  up=np.asarray(new["ground_normal"]);up/=np.linalg.norm(up)
  right=a["c2w"][0,:3,0].copy();right-=up*(right@up);right/=np.linalg.norm(right)

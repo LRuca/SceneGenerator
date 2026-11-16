@@ -4,7 +4,7 @@ import numpy as np
 from PIL import Image,ImageDraw
 import imageio.v2 as imageio
 from .scene import load_scene
-from .geometry import scene_parts,unit_mesh,transform_mesh,mesh_preview,render_parts
+from .geometry import part_mesh,scene_parts,unit_mesh,transform_mesh,mesh_preview,render_parts
 from .storage import new_run,write_json,reference
 
 def look_at(eye,center,up):
@@ -21,11 +21,11 @@ def export(scene_path,out,width=448):
     up=np.asarray(s["ground_normal"]);up/=np.linalg.norm(up)
     right=a["c2w"][0,:3,0].copy();right-=up*(right@up);right/=np.linalg.norm(right)
     front=np.cross(right,up)
-    rigid_ids={e["id"] for e in s["entities"] if e["motion"]=="rigid"}
+    rigid_ids={e["id"] for e in s["entities"] if e["motion"] in ("rigid","deformable")}
     verts=[];focus_vertices=[]
     for t in range(n):
         for part in scene_parts(s,t):
-            v=transform_mesh(unit_mesh("box" if part["kind"]=="plane" else part["kind"]),part["canonical_to_world"])[0]
+            v=part_mesh(part)[0]
             verts.append(v)
             if part["entity_id"] in rigid_ids:focus_vertices.append(v)
     points=np.concatenate(verts);center=(points.min(0)+points.max(0))/2
@@ -67,7 +67,7 @@ def export(scene_path,out,width=448):
     def P(x):return np.asarray(x)@basis
     edges=[(i,j) for i in range(8) for j in range(i) if bin(i^j).count("1")==1]
     camera=camera_poses[:,:3,3]
-    dynamic=[e for e in s["entities"] if e["motion"]=="rigid"]
+    dynamic=[e for e in s["entities"] if e["motion"] in ("rigid","deformable")]
     dynamic_ids=[e["id"] for e in dynamic]
     palette=["#d642a1","#00a5b5","#dc7a00","#70a52a"]
     trajectories=[]
@@ -78,7 +78,7 @@ def export(scene_path,out,width=448):
     whole=P(np.concatenate([points,camera]));lo,hi=whole.min(0),whole.max(0);mid=(lo+hi)/2;extent=(hi-lo).max()*.56
     def draw_world(ax,t,azimuth):
         for part in scene_parts(s,t):
-            v,f=transform_mesh(unit_mesh("box" if part["kind"]=="plane" else part["kind"]),part["canonical_to_world"])[:2]
+            v,f=part_mesh(part)[:2]
             v=P(v);col=palette[dynamic_ids.index(part["entity_id"])%len(palette)] if part["entity_id"] in dynamic_ids else "#e3e7ec"
             ax.add_collection3d(Poly3DCollection(v[f],facecolor=col,edgecolor="#777777",linewidth=.6,alpha=.28))
         for arr,col,label in [(camera,"#008ecf","VGGT camera")]+trajectories:
@@ -108,7 +108,7 @@ def export(scene_path,out,width=448):
     # OBJ at the middle instant, no guessed/unseen detailed surfaces.
     lines=["# Coarse fitted geometry; arbitrary VGGT scale; frozen middle frame"];offset=1
     for part in scene_parts(s,n//2):
-        v,f=transform_mesh(unit_mesh("box" if part["kind"]=="plane" else part["kind"]),part["canonical_to_world"])[:2]
+        v,f=part_mesh(part)[:2]
         lines.append("o "+part["entity_id"])
         lines.extend("v %.8f %.8f %.8f"%tuple(q) for q in v)
         lines.extend("f "+" ".join(str(int(i)+offset) for i in face) for face in f);offset+=len(v)

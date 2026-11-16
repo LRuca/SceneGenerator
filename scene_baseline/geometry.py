@@ -7,6 +7,11 @@ sys.path.insert(0,str(REF/"src"))
 from proxy_observations import ray_interval
 from primitive_composition import unit_mesh,transform_mesh
 
+def part_mesh(part):
+    if part["kind"]=="cage":
+        return np.asarray(part["vertices"]),np.asarray(part["faces"],int),None
+    return transform_mesh(unit_mesh("box" if part["kind"]=="plane" else part["kind"]),part["canonical_to_world"])
+
 def rays(K,c2w,h,w):
     v,u=np.mgrid[:h,:w]
     local=np.column_stack([u.ravel(),v.ravel(),np.ones(h*w)])@np.linalg.inv(K).T
@@ -25,14 +30,25 @@ def box_matrix(center,size,rotation=None):
 def render_parts(parts,K,c2w,h,w):
     depth=np.full((h,w),np.inf);labels=np.full((h,w),-1,dtype="int32")
     for index,p in enumerate(parts):
-        d=primitive_depth(p["kind"],p["canonical_to_world"],K,c2w,h,w)
+        if p["kind"]=="cage":
+            from .mesh_raster_v4 import intersect
+            o,ray=rays(K,c2w,h,w)
+            d=intersect(o,ray,p["vertices"],p["faces"])[0].reshape(h,w)
+        else:d=primitive_depth(p["kind"],p["canonical_to_world"],K,c2w,h,w)
         take=d<depth;depth[take]=d[take];labels[take]=index
     return depth,labels
 
 def scene_parts(scene,t):
     parts=[]
     for e in scene["entities"]:
+        if e.get("modeling_policy",{}).get("representation")=="description_only":continue
         if not e.get("exists",e.get("renderable",[True]*(t+1)))[t]:continue
+        if e["motion"]=="deformable":
+            from .cage_v4 import world_mesh
+            vertices,faces=world_mesh(e,t)
+            parts.append({"kind":"cage","entity_id":e["id"],"vertices":vertices.tolist(),"faces":faces.tolist(),
+              "canonical_to_world":np.eye(4).tolist(),"state_source":e["deformation"]["state_source"][t]})
+            continue
         transform=np.asarray(e["entity_to_world"][0 if e["motion"]=="static" else t])
         for p in e["parts"]:
             parts.append({"kind":p["kind"],"entity_id":e["id"],
@@ -51,6 +67,13 @@ def mesh_preview(parts,K,c2w,w,h):
     for index,part in enumerate(parts):
         hit=np.flatnonzero(labels.ravel()==index)
         if not len(hit):continue
+        if part["kind"]=="cage":
+            from .mesh_raster_v4 import intersect
+            _,indices,normals=intersect(origin,dirs[hit],part["vertices"],part["faces"])
+            normal=normals[indices.clip(0)]
+            shade=.46+.52*np.abs(normal@light)
+            frame[hit]=shade[:,None]*245
+            continue
         mat=np.asarray(part["canonical_to_world"]);inv=np.linalg.inv(mat)
         world=origin+dirs[hit]*depth.ravel()[hit,None]
         q=world@inv[:3,:3].T+inv[:3,3]

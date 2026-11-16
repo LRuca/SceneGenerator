@@ -3,7 +3,7 @@ import numpy as np,cv2,imageio.v2 as imageio
 from PIL import Image,ImageDraw
 from matplotlib import colormaps
 from .scene import load_scene
-from .geometry import scene_parts,render_parts,mesh_preview,agreement,unit_mesh,transform_mesh
+from .geometry import part_mesh,scene_parts,render_parts,mesh_preview,agreement,unit_mesh,transform_mesh
 from .storage import new_run,write_json,reference,verify
 from .preview import colors
 
@@ -73,7 +73,7 @@ def render(scene_path,out,width=192,evaluation_masks_manifest=None):
     vertices=[]
     for t in sorted({0,n//2,n-1}):
         for part in scene_parts(scene,t):
-            vertices.append(transform_mesh(unit_mesh("box" if part["kind"]=="plane" else part["kind"]),part["canonical_to_world"])[0])
+            vertices.append(part_mesh(part)[0])
     overview=[]
     if vertices:
         v=np.concatenate(vertices);camera=overview_pose((v.min(0),v.max(0)))
@@ -89,7 +89,7 @@ def render(scene_path,out,width=192,evaluation_masks_manifest=None):
     fig=plt.figure(figsize=(7,6));ax=fig.add_subplot(111,projection="3d")
     c=camera_poses[:,:3,3];ax.plot(c[:,0],c[:,1],c[:,2],label="predicted camera")
     for e in scene["entities"]:
-        if e["motion"]=="rigid":
+        if e["motion"] in ("rigid","deformable"):
             c=np.asarray(e["entity_to_world"])[:,:3,3];ax.plot(c[:,0],c[:,1],c[:,2],label=e["id"])
     ax.set(xlabel="World X",ylabel="World Y",zlabel="World Z",title="Camera and object paths | arbitrary scale")
     ax.legend();fig.tight_layout();fig.savefig(p/"trajectories.jpg",dpi=130);plt.close(fig)

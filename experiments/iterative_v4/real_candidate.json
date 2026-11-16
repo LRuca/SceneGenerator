@@ -1,0 +1,18 @@
+{
+  "selection_basis": "controlled r1/r2: visible-depth term helps; hard initial-centroid reference and naive alternating combination rejected",
+  "steps": 600,
+  "variants": {
+    "baseline": {},
+    "visible_depth": {
+      "visible_depth": 0.15
+    },
+    "visible_soft_containment_free": {
+      "visible_depth": 0.15,
+      "containment": 0.5,
+      "free_space": 0.5
+    }
+  },
+  "camera_policy": "fixed original same-stage VGGT",
+  "shape_policy": "fixed shared proxy for this isolation; shape updates and classification are separate later steps",
+  "real_cases_are": "feedback development regressions, not unseen generalization"
+}

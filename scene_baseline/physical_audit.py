@@ -19,6 +19,12 @@ def box_overlap(A,B):
   overlaps.append(overlap)
  return float(min(overlaps))
 
+def bound(part):
+ if part["kind"]!="cage":return part["canonical_to_world"]
+ v=np.asarray(part["vertices"]);lo=v.min(0);hi=v.max(0);m=np.eye(4)
+ m[:3,:3]=np.diag(np.maximum(hi-lo,1e-8));m[:3,3]=(lo+hi)/2
+ return m.tolist()
+
 def audit(scene):
  n=len(scene["entities"][0]["renderable"]);by={e["id"]:e for e in scene["entities"]};events=[]
  for t in range(n):
@@ -26,9 +32,9 @@ def audit(scene):
   for i,a in enumerate(parts):
    for b in parts[:i]:
     if a["entity_id"]==b["entity_id"]:continue
-    if by[a["entity_id"]]["motion"]!="rigid" and by[b["entity_id"]]["motion"]!="rigid":continue
+    if by[a["entity_id"]]["motion"] not in ("rigid","deformable") and by[b["entity_id"]]["motion"] not in ("rigid","deformable"):continue
     if a["kind"]=="plane" or b["kind"]=="plane":continue
-    overlap=box_overlap(a["canonical_to_world"],b["canonical_to_world"])
+    overlap=box_overlap(bound(a),bound(b))
     if overlap>0:events.append({"frame":t,"a":a["entity_id"],"b":b["entity_id"],"overlap_world_bound":overlap})
  return {"events":events,"status":"conflicts_detected" if events else "no_coarse_bound_conflict_detected",
   "interpretation":"oriented primitive bounds are conservative; no rigid-body dynamics or collision correction; wrong inferred interactions must remain flagged"}
