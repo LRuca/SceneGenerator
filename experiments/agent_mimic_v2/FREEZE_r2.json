@@ -1,0 +1,156 @@
+{
+  "created_at": "2026-11-16T11:53:43.848457+00:00",
+  "sources": [
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/agent_recovery_v2.py",
+      "sha256": "21e31258ce86a123b6f9dbea7e982ed5f3aa4f7d4cc8b6b7e0170503e664100d"
+    },
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/fit_scene_v2.py",
+      "sha256": "8b15e9e14a2f4ea542a6cec9674ed47dccaf7be215d83c0849efd9008962f89f"
+    },
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/recovery_pipeline_v2.py",
+      "sha256": "352a0f3c5aa01d77afc7f96990dab05258363c472cb789cf169f156d80a12ee1"
+    },
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/recovery_view_v2.py",
+      "sha256": "e0158e99aaa3a8cdb0b8e7320222a9527ffeda4d55ccb93569bc7b406771cdd8"
+    },
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/sparse_fit_v2.py",
+      "sha256": "eac41c666b01e4ff1780d60dbf2493ffb47a049bfe989d3159df1506eefe2289"
+    },
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/surfaces_v2.py",
+      "sha256": "570610a1a7b399cec5fe58a51a7e0a781c4103b3087e40aa7f24d6c7f3afa320"
+    },
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/tracking_v2.py",
+      "sha256": "ab192ac1d5a6b32246366660829df7b728ce01802317d0c91f2816658a9785e2"
+    },
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/experiments/agent_mimic_v2/AGENT_LOOP.md",
+      "sha256": "6103f9316d6bfcb9792e60c13eb7ba0954d12239fb48d6abe841415764a9a55b"
+    },
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scripts/test_recovery_v2.py",
+      "sha256": "58522af2ceb444f72307252ceb4fc2a7569584ffc5dbf516951d9345def30243"
+    }
+  ],
+  "shared_v1_sources": [
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/__init__.py",
+      "sha256": "f8055f4a76119417db3a18fbb27ccbfdb45422ba5a44118ac96fb7cd62a767ee"
+    },
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/__main__.py",
+      "sha256": "948877157740bdf72dc762c8f620c3477fb0e29b183f8294985c63717a2ed8eb"
+    },
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/agent.py",
+      "sha256": "a129067fed9c673965df865724a9e934e40a2e4011f1f73d32efa2d0b2b1a9c2"
+    },
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/contracts.py",
+      "sha256": "568166b041b86ef01c1341f1fc45a5c78facd66eab1235b58e157ca7305e7e2f"
+    },
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/delivery.py",
+      "sha256": "1a75a2ea818ec5b04b4a47b255fe978202693c04b671811a83ad9728dea972bd"
+    },
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/fit.py",
+      "sha256": "26f76245ce95621f6e64a5bdada8be17f126f1fbaa72129903e7d8932bb67738"
+    },
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/fit_scene.py",
+      "sha256": "b98b23bd68abf47c624561d5a89d3d4aa089db1d51217e7aba8a22feafa02a4f"
+    },
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/fixtures.py",
+      "sha256": "436350b51cbb20d9c6c64706c99dbdb10583b864abcbd1bc233a56ad081ec2f4"
+    },
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/geometry.py",
+      "sha256": "8e755e2424b925834e4eb378ef5ffb5933e19ae3e5d0abffaea5ca0c75e23617"
+    },
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/global_views.py",
+      "sha256": "8f5e344c2755c48e32dbaae9f0129aa790971d5a92efe263f432c126409423c9"
+    },
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/masks.py",
+      "sha256": "1e135903bd395769e6ca7cb8b434d69291c8024471544bd65323b69df2aff2f6"
+    },
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/observations.py",
+      "sha256": "f7783cab1bf2cff12722c98c6aaed59efe62b71d4f73734c53d36710964f41f0"
+    },
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/persistence.py",
+      "sha256": "0b36af989bd1741c4de53d6e9788015e4a8f51d3537c29bf0e23f597e7ac43dd"
+    },
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/persistence_view.py",
+      "sha256": "1a04be355b072778307531a8c61086de2b20b0622774c28463f824bc2bfdee90"
+    },
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/physical_audit.py",
+      "sha256": "1395db061075f061891e626d0535782a2a2d64cd8894161b17e2dea0862b0cb5"
+    },
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/pipeline.py",
+      "sha256": "4e831f77c8964da79a636b194033a01b5ca37581c30d7785bdb703ab9a600c7b"
+    },
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/preview.py",
+      "sha256": "b974e39f86a99023e04b89cc7f44ac2f714c76bf55c0cdda864d3eda0922f3da"
+    },
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/revision.py",
+      "sha256": "d570d2b2549db270116e1b1410629e6643e1303de5c64ffc69456875b609f36b"
+    },
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/sam3_worker.py",
+      "sha256": "d24f9064622158590e60ef08526fc21e54a7821e4831ceb41b2f49d6c6806c32"
+    },
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/scene.py",
+      "sha256": "62b103416b6463778584673b25d44d2c412919921e7459bdf896747816977064"
+    },
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/smoke.py",
+      "sha256": "11dc9139b57c421f6c62d432d5673d26c73c1958d8db6a86f62062773189c4bc"
+    },
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/storage.py",
+      "sha256": "e45c6b1e6408a67b48df1461e4b4b5ee7d46d412aeddea0d23e410b52454c841"
+    },
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/tools.py",
+      "sha256": "466e49a785db1e049ddb1591bc47d75afacb9ed639c5586659af38aca86fa9d2"
+    },
+    {
+      "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/vggt.py",
+      "sha256": "c8a5692d55902e34c810c89690a7e2cbc1be5a5de481d048e6e8509a971fff39"
+    }
+  ],
+  "supersedes": {
+    "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/experiments/agent_mimic_v2/FREEZE.json",
+    "sha256": "dc1543582a513f8957b09a64a8b13aa2c3ab37b4f4a4f395a140d27f2aef79fa"
+  },
+  "changed_sources": [
+    "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/agent_recovery_v2.py",
+    "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/recovery_view_v2.py",
+    "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/sparse_fit_v2.py",
+    "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scene_baseline/tracking_v2.py",
+    "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/scripts/test_recovery_v2.py"
+  ],
+  "reason": "Regression exposed invalid LK error-buffer handling and multi-review provenance loss; fixed both, added uncertainty labeling and behavioral checks.",
+  "evaluation_scope": "Courtyard feedback development and warehouse regression; neither is a new blinded benchmark.",
+  "tests": {
+    "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/runs/pv2_recovery_component_tests_r4/report.json",
+    "sha256": "48e42652ac619ec3a7bde5847ea0cf1229079c98cd0074a868565f86a54afe42"
+  }
+}

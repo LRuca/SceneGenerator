@@ -1,0 +1,19 @@
+{
+  "schema": "scene_baseline.agent_mimic_review.v2",
+  "status": "template_not_executed",
+  "actor": "current_chat_codex",
+  "parent_scene": null,
+  "geometry_manifest": null,
+  "entity_id": null,
+  "frame_interval": null,
+  "trigger": null,
+  "tool_artifacts": [],
+  "observed_facts": [],
+  "hypotheses": [],
+  "added_observations": [],
+  "rejected_observations": [],
+  "requested_changes": [],
+  "diagnostic_artifacts": [],
+  "decision": "unresolved",
+  "unresolved_reasons": []
+}

@@ -1,0 +1,12 @@
+{
+  "case": "wan_joint_single",
+  "diffusion_step": 10,
+  "rgb": "../pre-analysis/outputs/wan_joint_single/rgb_step_010.npy",
+  "script": "../pre-analysis/outputs/wan_joint_single/run.json",
+  "fps": 16,
+  "frames": 49,
+  "vggt_resolution": 518,
+  "reference_commit": "4a0fa059e24f43a2e0988daed9605b91214be3c7",
+  "camera_policy": "fixed_vggt_initialization",
+  "raw_geometry_required": true
+}

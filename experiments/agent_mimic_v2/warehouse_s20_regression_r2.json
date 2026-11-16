@@ -1,0 +1,29 @@
+{
+  "geometry": {
+    "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/runs/pv1_warehouse_crossing_s20_geometry/manifest.json",
+    "sha256": "ec218324e3ac00b1ce52a5bf992bf9ebe02a6c847f2e707931e2e1c0a8ecad5d"
+  },
+  "initial_scene": {
+    "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/runs/pv1_warehouse_crossing_s20_experiment/fit/scene.json",
+    "sha256": "dc2a5c8b0ffc6fb5b655cf73154682e347259068b31c7d2046483edb46bda084"
+  },
+  "comparison_scene": {
+    "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/runs/pv1_warehouse_crossing_s20_experiment/persistent/scene.json",
+    "sha256": "80eb74513906146f07b28daa509f27908205dca1f937eef271b605e72729a46e"
+  },
+  "reuse_tracks": {
+    "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/runs/pv2_warehouse_s20_tracks_reviewed_r2/manifest.json",
+    "sha256": "fc37deb4df13bc73a42f8a13f9a62312f2b2243f3b8b6238c92849c486490eef"
+  },
+  "entity_id": "red_vehicle",
+  "sparse_steps": 1200,
+  "joint_fit": true,
+  "joint_steps": 300,
+  "render_width": 300,
+  "device": "cuda",
+  "optimize_entities": [
+    "red_vehicle"
+  ],
+  "extra_relations": [],
+  "evaluation_scope": "cross-scene regression on previously inspected video; not a new blind test; frozen numerical code unchanged"
+}

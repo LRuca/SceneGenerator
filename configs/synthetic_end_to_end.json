@@ -1,0 +1,51 @@
+{
+  "schema": "scene_baseline.pipeline.v1",
+  "tasks": [
+    {
+      "id": "fixture",
+      "kind": "synthetic.fixture",
+      "arguments": {
+        "frames": 4,
+        "size": 48
+      }
+    },
+    {
+      "id": "initialize",
+      "kind": "scene.initialize",
+      "arguments": {
+        "manifest": {
+          "ref": "fixture.geometry_manifest"
+        },
+        "hypothesis": {
+          "ref": "fixture.hypothesis"
+        },
+        "masks_manifest": {
+          "ref": "fixture.masks_manifest"
+        }
+      }
+    },
+    {
+      "id": "fit",
+      "kind": "scene.fit",
+      "arguments": {
+        "scene": {
+          "ref": "initialize.scene"
+        },
+        "steps": 160,
+        "resolution": 32,
+        "device": "cpu",
+        "lr": 0.01
+      }
+    },
+    {
+      "id": "delivery",
+      "kind": "scene.render",
+      "arguments": {
+        "scene": {
+          "ref": "fit.scene"
+        },
+        "width": 96
+      }
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "schema": "scene_baseline.persistence_policy.v1",
+  "position_lambda_s4": 0.0025,
+  "yaw_lambda_s4": 0.005,
+  "camera_position_lambda_s4": 0.001,
+  "camera_rotation_lambda_s4": 0.001,
+  "smooth_camera": true,
+  "irls_iterations": 5,
+  "huber_scale_mad": 2.5,
+  "observation_min_pixels": 24,
+  "mask_erosion_pixels": 2,
+  "boundary_weight": 0.35,
+  "minimum_observations": 4,
+  "process_acceleration_shape_s2": 0.5,
+  "orientation_growth_rad_s": 0.35,
+  "holdout_start_fraction": 0.4,
+  "holdout_fraction": 0.2,
+  "render_width": 256,
+  "fit_steps": 200,
+  "fit_resolution": 64,
+  "fit_lr": 0.01,
+  "static_orientation": "depth_PCA_unresolved_semantic_axis",
+  "dynamic_shape": "one_box_no_instance_specific_topology_revision",
+  "visibility_resolution": 96,
+  "assumptions": [
+    "continuous shot: rigid/static entities persist absent explicit lifespan events",
+    "default boundary motion is constant-velocity continuation, not semantic certainty",
+    "yaw-only ground-oriented rigid motion; optional support prior projects lowest surface to supporting plane",
+    "fixed original VGGT camera estimates; camera jitter reported separately",
+    "one latent track per reviewed SAM identity; no automatic merge or semantic direction claims"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "schema": "scene_baseline.pipeline.v1",
+  "tasks": [
+    {
+      "id": "geometry",
+      "kind": "geometry.existing",
+      "arguments": {
+        "manifest": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/baseline/runs/stage10_geometry/manifest.json"
+      }
+    },
+    {
+      "id": "preview",
+      "kind": "geometry.preview",
+      "arguments": {
+        "manifest": {
+          "ref": "geometry.manifest"
+        }
+      }
+    },
+    {
+      "id": "agent",
+      "kind": "agent.prepare",
+      "arguments": {
+        "manifest": {
+          "ref": "geometry.manifest"
+        }
+      }
+    }
+  ]
+}

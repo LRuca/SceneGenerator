@@ -1,0 +1,18 @@
+[project]
+name = "scene-baseline"
+version = "0.1.0"
+requires-python = ">=3.10"
+description = "Auditable early-video geometry baseline with extensible processing tools"
+dependencies = ["numpy", "scipy", "opencv-python", "pillow", "imageio", "imageio-ffmpeg", "matplotlib"]
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project.scripts]
+scene-generator = "scene_baseline.__main__:main"
+scene-baseline = "scene_baseline.__main__:main"
+[project.optional-dependencies]
+fit = ["torch>=2.5"]
+[tool.setuptools.packages.find]
+include = ["scene_baseline*"]
+exclude = ["dependencies*", "tests*", "runs*", "reports*"]

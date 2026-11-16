@@ -1,0 +1,30 @@
+{
+  "created_at": "2026-11-16T09:45:51.253761+00:00",
+  "cases": [
+    {
+      "id": "warehouse_crossing",
+      "seed": 173,
+      "prompt": "A continuous wide low-angle tracking shot inside a spacious toy warehouse. One red delivery van drives steadily from left to right on the smooth concrete floor. One blue city bus moves slowly in the opposite direction farther behind it. A large stationary yellow rectangular support column stands near the middle of the room and briefly occludes the vehicles as they pass. Metal storage shelves line the back wall. The camera slowly dollies sideways to the right. The two vehicles keep their identities, sizes and rigid shapes. Smooth motion, daylight, no people, no cuts."
+    },
+    {
+      "id": "courtyard_occlusion",
+      "seed": 829,
+      "prompt": "A continuous wide shot of a miniature paved courtyard. One yellow toy forklift drives steadily from left to right, passes behind a large stationary gray rectangular kiosk in the middle ground, and emerges on its right side. A blue toy pickup truck remains parked near the left edge of the courtyard. The camera slowly slides sideways to the left, showing parallax between the kiosk, the parked truck and a distant plain brick wall. Vehicles keep their identities and rigid shapes, smooth motion, daylight, no people, no cuts."
+    }
+  ],
+  "generation": {
+    "model": "Wan2.1-T2V-1.3B",
+    "frames": 49,
+    "size": [
+      480,
+      480
+    ],
+    "steps": 50,
+    "readout_steps": [
+      20,
+      50
+    ],
+    "guidance_scale": 5.0
+  },
+  "rule": "No inspection of generated RGB/depth or reconstruction results before mechanism/config/source freeze. No feedback-based regeneration or case-specific retuning afterward."
+}
