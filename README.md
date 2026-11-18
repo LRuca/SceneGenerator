@@ -4,6 +4,10 @@ Research baseline: **RGB at a selected diffusion stage + script + joint VGGT dep
 
 The current route reconstructs a generated RGB estimate. It does not directly decode diffusion features or implement a trained text-to-4D model.
 
+## Latest audit
+
+See [2026-11-18 pipeline status and audit corrections](docs/PIPELINE_STATUS_20261118.md). The recommended motion-reviewed route is `agent.motion_decision` followed by `scene.fit_agent`; legacy `scene.fit` remains an unguarded experimental control. Motion decisions are supplied by the current-chat agent, not inferred automatically. Joint camera/object optimization and hard dynamic speed bounds are not implemented.
+
 ## Current components
 
 - Immutable observation manifests, hashes, tool registry, and explicit agent request/review interfaces.

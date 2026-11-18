@@ -8,7 +8,7 @@ from .storage import reference,write_json,new_run,verify,read_json
 from .scene import load_scene,validate_scene
 from .cage_v4 import torch_vertices,so3,make_state,projector
 
-def fit(scene_path,entity_id,out,steps=500,allow_bend=True,device="cpu",sample_count=160):
+def fit(scene_path,entity_id,out,steps=500,allow_bend=True,device="cpu",sample_count=160,smooth_axis=False):
     scene,m,a=load_scene(scene_path);entity=next(e for e in scene["entities"] if e["id"]==entity_id)
     if entity["motion"]!="deformable":raise ValueError("Explicit cage representation required")
     from .modeling_policy_v4 import entity_budget
@@ -24,7 +24,14 @@ def fit(scene_path,entity_id,out,steps=500,allow_bend=True,device="cpu",sample_c
     scale=float(np.median(a["depth"]));initial=np.asarray(entity["entity_to_world"])
     base_R=f(initial[:,:3,:3]);center=torch.nn.Parameter(f(initial[:,:3,3]/scale))
     rotation=torch.nn.Parameter(torch.zeros((n,3),dtype=dtype,device=device))
-    raw_bend=torch.nn.Parameter(torch.zeros((n,5,2),dtype=dtype,device=device),requires_grad=allow_bend)
+    # Smooth candidate: two spatial modes and at most seven temporal control states.
+    from scipy.interpolate import CubicSpline
+    temporal_basis=f(CubicSpline(np.linspace(0,1,min(n,7)),np.eye(min(n,7)),axis=0,bc_type="natural")(np.linspace(0,1,n))) if smooth_axis else None
+    raw_bend=torch.nn.Parameter(torch.zeros((min(n,7),2,2) if smooth_axis else (n,5,2),dtype=dtype,device=device),requires_grad=allow_bend)
+    ymode=np.linspace(-1,1,5)
+    modes=projector()@np.stack([ymode**2,ymode**3],1)
+    modes/=np.abs(modes).max(axis=0,keepdims=True)
+    modes=f(modes)
     shared0=f(entity["deformation"]["shared_size"])/scale
     log_size=torch.nn.Parameter(torch.zeros(3,dtype=dtype,device=device))
     parameters=[center,rotation,log_size]+([raw_bend] if allow_bend else [])
@@ -46,21 +53,29 @@ def fit(scene_path,entity_id,out,steps=500,allow_bend=True,device="cpu",sample_c
     def state():
         R=base_R@so3(.9*torch.tanh(rotation))
         size=shared0*torch.exp(log_size.clamp(-.4,.4))
-        bend=torch.einsum("ij,tjk->tik",P,.12*torch.tanh(raw_bend))
+        if smooth_axis:
+            amplitude=torch.einsum("ij,jkl->ikl",temporal_basis,.07*torch.tanh(raw_bend))
+            bend=torch.einsum("jk,tkl->tjl",modes,amplitude)
+        else:bend=torch.einsum("ij,tjk->tik",P,.12*torch.tanh(raw_bend))
         return R,center,size,bend
     def objective():
         R,C,size,bend=state()
         q=torch.einsum("nij,npj->npi",R.transpose(1,2),target-C[:,None])
-        level=((q[:,:,1]/size[1]+.5)*4).clamp(0,4-1e-5);lo=level.long();alpha=level-lo
+        axis=bend
+        if smooth_axis:
+            from .cage_v4 import smooth_basis
+            axis=torch.einsum("ij,tjk->tik",f(smooth_basis()),bend)
+        intervals=axis.shape[1]-1
+        level=((q[:,:,1]/size[1]+.5)*intervals).clamp(0,intervals-1e-5);lo=level.long();alpha=level-lo
         t=torch.arange(n,device=device)[:,None]
-        offset=bend[t,lo]*(1-alpha[...,None])+bend[t,lo+1]*alpha[...,None]
+        offset=axis[t,lo]*(1-alpha[...,None])+axis[t,lo+1]*alpha[...,None]
         radial=q[:,:,[0,2]]-size[1]*offset
         ellipse=torch.sqrt((radial/size[[0,2]]*.2e1).square().sum(-1)+1e-8)-1
         side=ellipse*size[[0,2]].min()*.5
         cap=q[:,:,1].abs()-size[1]*.5
         signed=torch.linalg.norm(torch.stack([side.clamp_min(0),cap.clamp_min(0)],-1),dim=-1)+torch.minimum(torch.maximum(side,cap),torch.zeros_like(side))
         surface=((torch.sqrt(signed.square()+.01**2)-.01)*wt).sum()/wt.sum().clamp_min(1)
-        local=torch_vertices(size,bend,circumference=16)
+        local=torch_vertices(size,bend,circumference=16,smooth=smooth_axis)
         world=torch.einsum("nij,npj->npi",R,local)+C[:,None]
         cam=torch.einsum("nij,npj->npi",wc[:,:3,:3],world*scale)+wc[:,:3,3][:,None]
         pixel=torch.einsum("nij,npj->npi",K,cam);uv=pixel[...,:2]/cam[...,2:].clamp_min(.01)
@@ -69,7 +84,7 @@ def fit(scene_path,entity_id,out,steps=500,allow_bend=True,device="cpu",sample_c
         silhouette=(image_distance/max(H,W)*available).sum()/(available.sum()*local.shape[1]).clamp_min(1)
         # Surface samples facing camera; depth is never inferred from bbox interiors.
         phi=torch.arange(16,device=device)*2*torch.pi/16
-        normal=torch.stack([torch.cos(phi)/size[0],torch.zeros(16,device=device),torch.sin(phi)/size[2]],-1).repeat(5,1)
+        normal=torch.stack([torch.cos(phi)/size[0],torch.zeros(16,device=device),torch.sin(phi)/size[2]],-1).repeat(17 if smooth_axis else 5,1)
         normal=normal/torch.linalg.norm(normal,dim=-1,keepdim=True)
         worldnormal=torch.einsum("nij,pj->npi",R,normal)
         origin=f(a["c2w"][:,:3,3])/scale
@@ -106,12 +121,13 @@ def fit(scene_path,entity_id,out,steps=500,allow_bend=True,device="cpu",sample_c
     result=copy.deepcopy(scene);e=next(e for e in result["entities"] if e["id"]==entity_id)
     poses=np.tile(np.eye(4),(n,1,1));poses[:,:3,:3]=R;poses[:,:3,3]=C;e["entity_to_world"]=poses.tolist()
     e["deformation"]=make_state(size,bend,["observed_fit" if x else "shape_held_motion_prior_unverified" for x in observed])
+    if smooth_axis:e["deformation"]["axis_mode"]="smooth_v5"
     e["observed"]=observed.tolist();e["renderable"]=[True]*n
     for key in ["continuous_motion","exists","observation_available","observation_used","state_source"]:e.pop(key,None)
     result["stage"]="coarse_deformable_fit_v4_candidate";result.pop("continuous_camera",None)
     result["limitations"]+=["coarse tube cannot express separated limbs or arbitrary topology","predicted depth and masks are fallible","surface objective is approximate, no guaranteed collision-free deformation"]
     validate_scene(result,n);write_json(dest/"scene.json",result)
     report={"source_scene":reference(scene_path),"entity":entity_id,"allow_bend":allow_bend,"camera_optimized":False,
-      "steps":steps,"history":history,"seconds":time.perf_counter()-start,"observed_frames":int(observed.sum()),
+      "smooth_axis":smooth_axis,"spatial_modes":2 if smooth_axis else 5,"temporal_control_count":min(n,7) if smooth_axis else n,"steps":steps,"history":history,"seconds":time.perf_counter()-start,"observed_frames":int(observed.sum()),
       "max_bend_height_fraction":float(np.abs(bend).max()),"shared_size":size.tolist(),"automatic_acceptance":False}
     write_json(dest/"report.json",report);return report

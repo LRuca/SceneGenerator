@@ -1,0 +1,69 @@
+{
+  "actor": "current_chat_codex",
+  "entities": [
+    {
+      "id": "forklift",
+      "role": "key_actor",
+      "appearance_image": 1,
+      "geometric_duties": [
+        "contact",
+        "occlusion"
+      ],
+      "evidence": "Step20 existing sequence: moving yellow forklift is the main action carrier.",
+      "prompt_id": "I1",
+      "appearance_label": "green vintage toy coupe"
+    },
+    {
+      "id": "parked_truck",
+      "role": "key_prop",
+      "appearance_image": 2,
+      "geometric_duties": [
+        "contact",
+        "occlusion",
+        "layout"
+      ],
+      "evidence": "Step20 existing sequence: parked blue pickup is the second vehicle identity and spatial anchor; static does not imply unimportant.",
+      "prompt_id": "I2",
+      "appearance_label": "white box-bodied toy delivery van"
+    },
+    {
+      "id": "ground",
+      "role": "structural",
+      "appearance_image": 5,
+      "geometric_duties": [
+        "support",
+        "contact",
+        "layout"
+      ],
+      "evidence": "Fitted ground surface supports both vehicles and receives shadows.",
+      "prompt_id": "ground",
+      "appearance_label": "ground"
+    },
+    {
+      "id": "wall",
+      "role": "structural",
+      "appearance_image": 4,
+      "geometric_duties": [
+        "occlusion",
+        "collision_boundary",
+        "layout"
+      ],
+      "evidence": "Rear brick-wall geometry defines scene boundary.",
+      "prompt_id": "wall",
+      "appearance_label": "wall"
+    },
+    {
+      "id": "gray_obstacle",
+      "role": "structural",
+      "appearance_image": 3,
+      "geometric_duties": [
+        "occlusion",
+        "collision_boundary",
+        "layout"
+      ],
+      "evidence": "Gray kiosk participates in occlusion and must retain separate fitted geometry.",
+      "prompt_id": "gray_obstacle",
+      "appearance_label": "gray_obstacle"
+    }
+  ]
+}

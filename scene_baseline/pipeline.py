@@ -53,6 +53,14 @@ def _stage(kind,args,out):
         from .scene import initialize
         initialize(args["manifest"],args["hypothesis"],args["masks_manifest"],out)
         return {"scene":str(out/"scene.json")}
+    if kind=="agent.motion_decision":
+        from .motion_policy_v1 import apply
+        apply(args["scene"],args["decisions"],out)
+        return {"scene":str(out/"scene.json"),"report":str(out/"report.json")}
+    if kind=="scene.fit_agent":
+        from .motion_policy_v1 import fit_locked
+        fit_locked(args["scene"],out,steps=args.get("steps",160),resolution=args.get("resolution",48),device=args.get("device","cpu"),lr=args.get("lr",.015),entity_ids=args.get("entities"))
+        return {"scene":str(out/"scene.json"),"report":str(out/"report.json")}
     if kind=="scene.fit":
         from .fit_scene import fit
         fit(args["scene"],out,args.get("steps",160),args.get("resolution",48),args.get("device","cpu"),args.get("lr",.015),entity_ids=args.get("entities"))
@@ -61,6 +69,14 @@ def _stage(kind,args,out):
         from .persistence import apply
         apply(args["scene"],args["policy"],out)
         return {"scene":str(out/"scene.json"),"report":str(out/"report.json")}
+    if kind=="proxy.encode":
+        from .proxy_encoding_v8 import prepare
+        prepare(args["scene"],args["decisions"],out)
+        return {"scene":str(out/"scene.json"),"report":str(out/"report.json")}
+    if kind=="blocking.package":
+        from .proxy_encoding_v8 import package
+        package(args["scene"],args["source_package"],out,args.get("displacement",0.),args.get("width",320))
+        return {"manifest":str(out/"manifest.json"),"video":str(out/"white_model_reference.mp4"),"comparison":str(out/"render_comparison.mp4"),"prompt":str(out/"prompt.txt"),"validation":str(out/"validation.json")}
     if kind=="scene.render":
         from .delivery import render
         render(args["scene"],out,args.get("width",192))

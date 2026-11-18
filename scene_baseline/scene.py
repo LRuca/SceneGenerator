@@ -11,7 +11,10 @@ def validate_scene(scene,n):
         ids.append(e["id"])
         if e["motion"] not in ("static","rigid","deformable"):raise ValueError("Unsupported scene motion")
         if e["motion"]=="deformable":
-            from .cage_v4 import validate
+            if e["deformation"].get("schema")=="scene_baseline.human_hinge.v6":
+                from .human_hinge_v6 import validate
+            else:
+                from .cage_v4 import validate
             validate(e["deformation"],n)
         pose=np.asarray(e["entity_to_world"],float)
         if pose.shape!=((1 if e["motion"]=="static" else n),4,4):raise ValueError("Scene pose timeline")

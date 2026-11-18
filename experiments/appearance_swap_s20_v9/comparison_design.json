@@ -1,0 +1,16 @@
+{
+  "source_diffusion_step": 20,
+  "source_scene": {
+    "path": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/SceneGenerator/runs/v4_courtyard_r1/step20_visible_soft_containment_free/scene.json",
+    "sha256": "50e25f71b90e98262bc09bf110379e5bc77f6b41c6a67cae297924117a7ba855"
+  },
+  "same_geometry": true,
+  "same_camera_translation": -0.052730561067245524,
+  "same_seed": 40124,
+  "appearance_only_no_full_scene_inputs": true,
+  "variables": [
+    "vehicle types and appearance",
+    "kiosk/wall/ground material patches",
+    "matching appearance/type prompt clauses"
+  ]
+}

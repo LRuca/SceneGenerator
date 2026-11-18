@@ -192,7 +192,11 @@ def apply(scene_path,policy_path,out,withheld=None):
   rel=basis.T@original[good,:3,:3]
   y=np.arctan2(rel[:,0,2],rel[:,0,0])
   semantic="landmarks" in e or e.get("semantic_front") is not None
-  y=np.unwrap(y if semantic else 2*y)/(1 if semantic else 2)
+  if not semantic and e.get("orientation_hypothesis") and e.get("fit_constraints",{}).get("lock_yaw"):
+   from .orientation_v12 import resolve_branch_for_smoothing
+   y=resolve_branch_for_smoothing(y,weights)
+  else:
+   y=np.unwrap(y if semantic else 2*y)/(1 if semantic else 2)
   pos=fit_curve(times[good],raw,weights,policy["position_lambda_s4"],policy["irls_iterations"],policy["huber_scale_mad"])
   yaw=fit_curve(times[good],y,weights,policy["yaw_lambda_s4"],policy["irls_iterations"],policy["huber_scale_mad"])
   motion={"position":pos,"yaw":yaw,"basis":basis.tolist(),"time_unit":"seconds","support_vertices":_proxy_vertices(e).tolist()}

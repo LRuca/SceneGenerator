@@ -1,0 +1,25 @@
+{
+  "schema": "scene_baseline.pipeline.v1",
+  "tasks": [
+    {
+      "id": "identity",
+      "kind": "proxy.encode",
+      "arguments": {
+        "scene": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/SceneGenerator/runs/v4_courtyard_r1/step20_visible_soft_containment_free/scene.json",
+        "decisions": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/SceneGenerator/experiments/appearance_swap_s20_v9/swapped_decisions.json"
+      }
+    },
+    {
+      "id": "blocking",
+      "kind": "blocking.package",
+      "arguments": {
+        "scene": {
+          "ref": "identity.scene"
+        },
+        "source_package": "/home/tione/notebook/home/keithanwang/vlm-vla/gafu/sceneblocker/SceneGenerator/runs/v9_s20_swapped_appearance_r1",
+        "displacement": -0.052730561067245524,
+        "width": 320
+      }
+    }
+  ]
+}

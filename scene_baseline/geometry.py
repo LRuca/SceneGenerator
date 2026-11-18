@@ -44,6 +44,9 @@ def scene_parts(scene,t):
         if e.get("modeling_policy",{}).get("representation")=="description_only":continue
         if not e.get("exists",e.get("renderable",[True]*(t+1)))[t]:continue
         if e["motion"]=="deformable":
+            if e["deformation"].get("schema")=="scene_baseline.human_hinge.v6":
+                from .human_hinge_v6 import parts as human_parts
+                parts.extend(human_parts(e,t));continue
             from .cage_v4 import world_mesh
             vertices,faces=world_mesh(e,t)
             parts.append({"kind":"cage","entity_id":e["id"],"vertices":vertices.tolist(),"faces":faces.tolist(),
@@ -71,6 +74,19 @@ def mesh_preview(parts,K,c2w,w,h):
             from .mesh_raster_v4 import intersect
             _,indices,normals=intersect(origin,dirs[hit],part["vertices"],part["faces"])
             normal=normals[indices.clip(0)]
+            if part.get("smooth_shading"):
+                vv=np.asarray(part["vertices"]);ff=np.asarray(part["faces"],int)
+                vn=np.zeros_like(vv)
+                for corner in range(3):np.add.at(vn,ff[:,corner],normals)
+                vn/=np.linalg.norm(vn,axis=-1,keepdims=True).clip(1e-9)
+                tri=ff[indices.clip(0)];abc=vv[tri]
+                pt=origin+dirs[hit]*depth.ravel()[hit,None]
+                e0=abc[:,1]-abc[:,0];e1=abc[:,2]-abc[:,0];v=pt-abc[:,0]
+                d00=(e0*e0).sum(-1);d01=(e0*e1).sum(-1);d11=(e1*e1).sum(-1)
+                d20=(v*e0).sum(-1);d21=(v*e1).sum(-1);den=(d00*d11-d01*d01).clip(1e-12)
+                b=(d11*d20-d01*d21)/den;c=(d00*d21-d01*d20)/den
+                normal=vn[tri[:,0]]*(1-b-c)[:,None]+vn[tri[:,1]]*b[:,None]+vn[tri[:,2]]*c[:,None]
+                normal/=np.linalg.norm(normal,axis=-1,keepdims=True).clip(1e-9)
             shade=.46+.52*np.abs(normal@light)
             frame[hit]=shade[:,None]*245
             continue

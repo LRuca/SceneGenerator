@@ -6,11 +6,17 @@ def projector(sections=5):
     X=np.column_stack([np.ones(sections),y])
     return np.eye(sections)-X@np.linalg.pinv(X)
 
+def smooth_basis(samples=17):
+    from scipy.interpolate import CubicSpline
+    return CubicSpline(np.linspace(0,1,5),np.eye(5),axis=0,bc_type="natural")(np.linspace(0,1,samples))
+
 def local_vertices(state,t,circumference=12):
     shared=state["shared_size"];size=np.asarray(shared,float)
     bend=np.asarray(state["bend_xz"],float)[t]
     bend=projector(len(bend))@bend
     radial=np.asarray(state.get("radial_log",np.zeros((len(state["bend_xz"]),len(bend),2))),float)[t]
+    if state.get("axis_mode")=="smooth_v5":
+        B=smooth_basis();bend=B@bend;radial=B@radial
     y=np.linspace(-.5,.5,len(bend));phi=np.arange(circumference)*2*np.pi/circumference
     rings=[]
     for k in range(len(y)):
@@ -33,7 +39,7 @@ def faces(sections=5,circumference=12):
 def world_mesh(entity,t):
     vertices=local_vertices(entity["deformation"],t)
     T=np.asarray(entity["entity_to_world"])[t]
-    return vertices@T[:3,:3].T+T[:3,3],faces()
+    return vertices@T[:3,:3].T+T[:3,3],faces(sections=17 if entity["deformation"].get("axis_mode")=="smooth_v5" else 5)
 
 def validate(state,n):
     if state.get("schema")!="scene_baseline.cage.v4":raise ValueError("Cage schema")
@@ -53,11 +59,16 @@ def make_state(size,bend,source):
       "parameterization":"five cross-sections; constant and linear bend components assigned to root pose; no anatomical detail"}
     validate(state,len(b));return state
 
-def torch_vertices(size,bend,circumference=12,radial_log=None):
+def torch_vertices(size,bend,circumference=12,radial_log=None,smooth=False):
     import torch
     n,sections,_=bend.shape
     P=torch.as_tensor(projector(sections),device=bend.device,dtype=bend.dtype)
     bend=torch.einsum("ij,tjk->tik",P,bend)
+    if smooth:
+        B=torch.as_tensor(smooth_basis(),device=bend.device,dtype=bend.dtype)
+        bend=torch.einsum("ij,tjk->tik",B,bend)
+        if radial_log is not None:radial_log=torch.einsum("ij,tjk->tik",B,radial_log)
+        sections=bend.shape[1]
     y=torch.linspace(-.5,.5,sections,device=bend.device,dtype=bend.dtype)
     phi=torch.arange(circumference,device=bend.device,dtype=bend.dtype)*2*torch.pi/circumference
     radial=torch.zeros_like(bend) if radial_log is None else radial_log
